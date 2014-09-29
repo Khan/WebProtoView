@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIAlertViewDelegate {
+class ViewController: UIViewController, UIAlertViewDelegate, UIGestureRecognizerDelegate {
 	@IBOutlet var webView: UIWebView?
 
 	let URLKey = "URL"
@@ -17,8 +17,9 @@ class ViewController: UIViewController, UIAlertViewDelegate {
 		super.viewDidAppear(animated)
 
 		let tapGesture = UITapGestureRecognizer(target: self, action: "showNavigationAlert")
-		tapGesture.numberOfTouchesRequired = 4
+		tapGesture.numberOfTouchesRequired = 3
 		view.addGestureRecognizer(tapGesture)
+		tapGesture.delegate = self
 
 		NSUserDefaults.standardUserDefaults().registerDefaults([URLKey: "http://Sprout.local:9001"])
 		UIApplication.sharedApplication().idleTimerDisabled = true
@@ -28,7 +29,7 @@ class ViewController: UIViewController, UIAlertViewDelegate {
 
 	func showNavigationAlert() {
 		let urlString = NSUserDefaults.standardUserDefaults().objectForKey(URLKey) as String!
-		let alertView = UIAlertView(title: "Navigate to URL", message: "Tap with four fingers to get this prompt again.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Navigate")
+		let alertView = UIAlertView(title: "Navigate to URL", message: "Tap with three fingers to get this prompt again.", delegate: self, cancelButtonTitle: "Cancel", otherButtonTitles: "Navigate")
 		alertView.alertViewStyle = .PlainTextInput
 		let textField = alertView.textFieldAtIndex(0)! as UITextField
 		textField.text = urlString
@@ -47,7 +48,11 @@ class ViewController: UIViewController, UIAlertViewDelegate {
 	}
 
 	override func prefersStatusBarHidden() -> Bool {
-		return true;
+		return true
+	}
+
+	func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return true
 	}
 
 }
